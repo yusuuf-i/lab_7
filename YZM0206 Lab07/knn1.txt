@@ -1,0 +1,37 @@
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from time import perf_counter as pc
+
+X, y = load_iris(return_X_y=True)
+
+X = pd.DataFrame(X)
+y = pd.Series(y)
+
+X.head()
+
+y.head()
+
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=5)
+
+len(X_train), len(X_val)
+
+KNN = KNeighborsClassifier(n_neighbors=3)
+start = pc()
+KNN.fit(X_train, y_train)
+end = pc()
+print(f'Training Time: {end-start}')
+
+start = pc()
+y_pred = KNN.predict(X_val)
+end = pc()
+print(f'Predicting Time: {end-start}')
+
+start = pc()
+y_train_pred = KNN.predict(X_train)
+end = pc()
+print(f'Predicting Time: {end-start}')
+
+print(f'Training Accuracy: {sum(y_train_pred == y_train)/len(y_train_pred)}')
+print(f'Validation Accuracy: {sum(y_pred == y_val)/len(y_pred)}')
